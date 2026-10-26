@@ -1,0 +1,8 @@
+- id: secretsweep
+  name: secretsweep
+  description: Detect secrets, private IPs and personal data before publishing
+  entry: secretsweep check
+  language: python
+  types: [text]
+  pass_filenames: true
+  require_serial: true

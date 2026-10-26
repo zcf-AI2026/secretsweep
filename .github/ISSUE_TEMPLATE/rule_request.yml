@@ -1,0 +1,40 @@
+name: Rule request
+description: Suggest a new detection rule (a secret format, an identifier, a file type).
+title: "[rule] "
+labels: ["rule"]
+body:
+  - type: input
+    id: what
+    attributes:
+      label: What should be detected?
+      placeholder: Vendor X API keys, format `xx_live_` + 32 hex chars
+    validations:
+      required: true
+  - type: textarea
+    id: sample
+    attributes:
+      label: Sample value (fake it!)
+      description: Use a made-up value with the right shape. Never paste a real key.
+      render: text
+    validations:
+      required: true
+  - type: textarea
+    id: negatives
+    attributes:
+      label: What must NOT match
+      description: Realistic strings that look similar but are harmless — this is what keeps rules quiet.
+      render: text
+    validations:
+      required: true
+  - type: input
+    id: placeholder
+    attributes:
+      label: Placeholder name
+      placeholder: VENDOR_X_KEY
+  - type: checkboxes
+    id: confirm
+    attributes:
+      label: Before submitting
+      options:
+        - label: The sample above is fabricated, not a real credential.
+          required: true

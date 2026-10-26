@@ -1,0 +1,91 @@
+# Built-in detection rules for secretsweep.
+#
+# Patterns are Python regular expressions (literal TOML strings, so backslashes
+# are preserved). `placeholder` becomes ⟨PLACEHOLDER⟩ in the document unless
+# `placeholder_format` in your config says otherwise.
+#
+# Users override any rule by re-using its `id` in their own secretsweep.toml.
+
+[settings]
+placeholder_format = "⟨{name}⟩"
+allow = []
+
+# --- credentials -----------------------------------------------------------
+
+[[rule]]
+id = "private_key"
+pattern = '''-----BEGIN [A-Z ]*PRIVATE KEY-----[\s\S]*?-----END [A-Z ]*PRIVATE KEY-----'''
+placeholder = "PRIVATE_KEY"
+description = "PEM / OpenSSH private key block"
+
+[[rule]]
+id = "github_token"
+pattern = '''\b(?:gh[pousr]_[A-Za-z0-9]{36,}|github_pat_[A-Za-z0-9_]{50,})\b'''
+placeholder = "GITHUB_TOKEN"
+description = "GitHub personal access token"
+
+[[rule]]
+id = "openai_key"
+pattern = '''\bsk-[A-Za-z0-9_-]{20,}\b'''
+placeholder = "API_KEY"
+description = "OpenAI-style sk- API key"
+
+[[rule]]
+id = "aws_access_key"
+pattern = '''\bAKIA[0-9A-Z]{16}\b'''
+placeholder = "AWS_ACCESS_KEY"
+description = "AWS access key id"
+
+[[rule]]
+id = "jwt"
+pattern = '''\beyJ[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}\b'''
+placeholder = "JWT"
+description = "JSON Web Token"
+
+[[rule]]
+id = "db_url"
+pattern = '''\b(?:postgres(?:ql)?|mysql|mongodb(?:\+srv)?|redis|amqp)://[^\s"'`<>]+'''
+placeholder = "DB_URL"
+description = "Database or broker URL (often carries a password)"
+
+# --- network addresses -----------------------------------------------------
+
+[[rule]]
+id = "ipv4_private"
+pattern = '''\b(?:10\.\d{1,3}\.\d{1,3}\.\d{1,3}|192\.168\.\d{1,3}\.\d{1,3}|172\.(?:1[6-9]|2\d|3[01])\.\d{1,3}\.\d{1,3}|100\.(?:6[4-9]|[7-9]\d|1[01]\d|12[0-7])\.\d{1,3}\.\d{1,3}|169\.254\.\d{1,3}\.\d{1,3})\b'''
+placeholder = "PRIVATE_IP"
+description = "Private / link-local / CGNAT IPv4 address"
+
+[[rule]]
+id = "ipv4_public"
+pattern = '''\b(?!(?:10|127|0)\.)(?!(?:192\.168|169\.254)\.)(?!(?:172\.(?:1[6-9]|2\d|3[01]))\.)(?!(?:100\.(?:6[4-9]|[7-9]\d|1[01]\d|12[0-7]))\.)(?:\d{1,3}\.){3}\d{1,3}\b'''
+placeholder = "PUBLIC_IP"
+description = "Routable IPv4 address"
+
+# --- personal data ---------------------------------------------------------
+
+[[rule]]
+id = "phone_cn"
+pattern = '''(?<!\d)1[3-9]\d{9}(?!\d)'''
+placeholder = "PHONE"
+description = "Mainland China mobile number"
+
+[[rule]]
+id = "email"
+pattern = '''\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b'''
+placeholder = "EMAIL"
+description = "Email address"
+
+# --- local paths -----------------------------------------------------------
+
+[[rule]]
+id = "home_macos"
+pattern = '''/Users/[A-Za-z0-9._-]+'''
+placeholder = "HOME_DIR"
+description = "macOS home directory"
+
+[[rule]]
+id = "home_linux"
+pattern = '''/home/[a-z_][a-z0-9_-]*'''
+placeholder = "HOME_DIR"
+description = "Linux home directory"
