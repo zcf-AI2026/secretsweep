@@ -39,7 +39,12 @@ jobs:
 
       - name: Smoke test the CLI
         run: |
+          secretsweep --version
           secretsweep rules
           secretsweep scan examples/ -f json > /dev/null
-          secretsweep check examples/ && exit 1 || true   # finds the sample data → exit 1
-          secretsweep --version
+          # examples/ intentionally contains findings, so check must fail (exit 1)
+          if secretsweep check examples/; then
+            echo "::error::expected findings in examples/, got none"
+            exit 1
+          fi
+          echo "check correctly reported the sample findings"
